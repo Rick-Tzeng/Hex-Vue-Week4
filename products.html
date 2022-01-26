@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue作品實戰班第一週：關注點分離</title>
+    <!-- Bootstrap CDN -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+    <!-- Vue CDN package -->
+    <script src="https://unpkg.com/vue@next"></script>
+    <!-- axios jsDelivr CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <!-- 掛載 Vue -->
+    <div id="app">
+      <div class="container-fluid">
+        <div class="row text-center my-5">
+          <div class="col">
+            <button
+              type="button"
+              class="btn btn-outline-success"
+              id="loginButton"
+              @click="checkLogin"
+            >
+              確認登入狀態
+            </button>
+          </div>
+          <div class="col">
+            <button
+              type="button"
+              class="btn btn-outline-success"
+              id="loginButton"
+              @click="getProducts"
+            >
+              更新產品列表
+            </button>
+          </div>
+          <div class="col">
+            <button
+              type="button"
+              class="btn btn-outline-success"
+              id="loginButton"
+              data-bs-toggle="modal"
+              data-bs-target="#addProduct"
+            >
+              新增一個產品
+            </button>
+          </div>
+          <div class="col">
+            <button
+              type="button"
+              class="btn btn-outline-success"
+              id="loginButton"
+              @click="removeProduct"
+            >
+              刪除這項產品
+            </button>
+          </div>
+        </div>
+        <div
+          class="modal fade"
+          id="addProduct"
+          tabindex="-1"
+          aria-labelledby="addProduct"
+          aria-hidden="true"
+        >
+          <div
+            class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+          >
+            <div class="modal-content">
+              <div class="modal-header bg-success">
+                <h5 class="modal-title text-white" id="addProductLabel">
+                  新增一個產品
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close bg-white"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <form>
+                  <div class="mb-3">
+                    <label class="form-label" for="productTitle"
+                      >產品名稱</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="productTitle"
+                      v-model="temp.data.title"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="productCategory"
+                      >產品類型</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="productCategory"
+                      v-model="temp.data.category"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="productOriginPrice"
+                      >產品原價</label
+                    >
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="productOriginPrice"
+                      v-model="temp.data.origin_price"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="productPrice"
+                      >產品售價</label
+                    >
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="productPrice"
+                      v-model="temp.data.price"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="productUnit">單位</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="productUnit"
+                      v-model="temp.data.unit"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="productDescription"
+                      >產品介紹</label
+                    >
+                    <textarea
+                      class="form-control"
+                      id="productDescription"
+                      rows="3"
+                      v-model="temp.data.description"
+                      placeholder="請介紹您的產品"
+                    ></textarea>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="productContent"
+                      >產品內容</label
+                    >
+                    <textarea
+                      class="form-control"
+                      id="productContent"
+                      rows="3"
+                      v-model="temp.data.content"
+                      placeholder="請描述產品的內容"
+                    ></textarea>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-check-label" for="productImageUrl"
+                      >請選擇是否啟用</label
+                    >
+                    <select
+                      class="form-select"
+                      aria-label="isEnabled"
+                      v-model="temp.data.is_enabled"
+                    >
+                      <option value="0">不啟用</option>
+                      <option value="1">啟用</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-check-label" for="productImageUrl"
+                      >產品圖片連結</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="productImageUrl"
+                      v-model="temp.data.imageUrl"
+                    />
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-success"
+                  @click="addProduct"
+                >
+                  上傳
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  取消
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <table class="table table-striped align-middle caption-top">
+              <caption class="h2">
+                產品列表
+              </caption>
+              <thead class="table-dark">
+                <tr>
+                  <th v-for="label in labels" :key="label">{{ label }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- 使用 v-for 渲染多筆資料 -->
+                <tr v-for="product in products" :key="product.id">
+                  <td>{{ product.title }}</td>
+                  <td>{{ product.origin_price }}</td>
+                  <td>{{ product.price }}</td>
+                  <td v-if="product.is_enabled == 1" class="text-success">
+                    啟用
+                  </td>
+                  <td v-else class="text-muted">不啟用</td>
+                  <td>
+                    <!-- 使用 v-on: 監聽 click 事件, 將 product 暫存到 selectedProduct -->
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      @click="selectedProduct = product"
+                    >
+                      查看細節
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div>
+              <p>目前共有 {{ products.length }} 項產品</p>
+            </div>
+          </div>
+
+          <div class="col">
+            <h2>產品細節</h2>
+            <!-- 如果 selectedProduct 有資料就呈現 v-if 的區塊, 沒有的話就呈現 v-else 的區塊 -->
+            <div v-if="selectedProduct.title">
+              <div class="card">
+                <img
+                  :src="selectedProduct.imageUrl"
+                  :alt="selectedProduct.title"
+                  class="card-img-top rounded mx-auto w-50"
+                />
+                <div class="card-body">
+                  <h5 class="card-title">
+                    {{ selectedProduct.title }}
+                    <span class="badge bg-primary"
+                      >{{ selectedProduct.category }}</span
+                    >
+                  </h5>
+                  <p class="card-text">
+                    商品描述：{{ selectedProduct.description }}
+                  </p>
+                  <p class="card-text">{{ selectedProduct.content }}</p>
+                  <p class="card-text">
+                    售價：{{ selectedProduct.price }}
+                    <span>
+                      <del class="text-muted"
+                        >{{ selectedProduct.origin_price }}</del
+                      >
+                    </span>
+                    {{ selectedProduct.unit }}／元
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div v-else>
+              <p class="text-secondary">請選擇一個品項</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Bootstrap Bundle JS CDN -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+      crossorigin="anonymous"
+    ></script>
+    <script src="js/week1.js"></script>
+  </body>
+</html>
