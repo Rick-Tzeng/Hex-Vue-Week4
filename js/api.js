@@ -49,7 +49,7 @@ const app = {
         })
         .catch((err) => {
           alert("沒登錄帳號, 請重新登入");
-          window.location.assign("week2.html");
+          window.location.assign("login.html");
         });
     },
     // 取得後臺所有產品列表
@@ -65,7 +65,7 @@ const app = {
           }
         })
         .catch((err) => {
-          if (window.location.pathname == "/week2.html") {
+          if (window.location.pathname == "/login.html") {
           } else alert("目前沒有任何產品資料, 請新增產品資料");
         });
     },

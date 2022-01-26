@@ -22,7 +22,7 @@ const app = {
           // expires 則是 token 的有效期限
           const { token, expired } = res.data;
           document.cookie = `hexToken=${token}; expires=${new Date(expired)}`;
-          window.location.assign("week1.html");
+          window.location.assign("products.html");
         })
         .catch((err) => {
           // 當 Promise 回傳失敗時, 會出現彈跳窗告知帳號驗證錯誤的訊息
