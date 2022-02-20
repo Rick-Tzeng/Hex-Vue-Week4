@@ -87,8 +87,10 @@ const app = createApp({
       // 編輯
       else if (whichModal === 'edit') {
         this.isNewProduct = false;
-        // 利用展開的方式淺層複製選定的產品, 避免原來的資料一併被改動
-        this.tempProduct = { ...item };
+        //// 利用展開的方式淺層複製選定的產品, 避免原來的資料一併被改動
+        // 因 item 內含有傳參考的物件 item.imageUrls
+        // 所以應當使用深層拷貝避免傳參考的物件被修改
+        this.tempProduct = JSON.parse(JSON.stringify(item));
         updateModal.show();
       }
       // 刪除
@@ -102,7 +104,7 @@ const app = createApp({
 
 // 全域註冊：新增、編輯 Modal 元件
 app.component('productModal', {
-  props: ['apiUrl', 'apiPath', 'product', 'isNewProduct'],
+  props: ['apiUrl', 'apiPath', 'product', 'isNewProduct', 'pagination'],
   mounted() {
     updateModal = new bootstrap.Modal(document.getElementById('productModal'), {
       backdrop: 'static',
@@ -124,7 +126,11 @@ app.component('productModal', {
         .then((res) => {
           alert(res.data.message);
           updateModal.hide();
-          this.$emit('update');
+          // 修改：編輯產品後，停留在同一頁面
+          this.$emit(
+            'update',
+            httpMethod === 'put' ? this.pagination.current_page : 1
+          );
         })
         .catch((err) => {
           alert(err.response.data.message);
@@ -141,7 +147,7 @@ app.component('productModal', {
 
 // 全域註冊：刪除產品 Modal 元件
 app.component('delProductModal', {
-  props: ['apiUrl', 'apiPath', 'product'],
+  props: ['apiUrl', 'apiPath', 'product', 'pagination'],
   mounted() {
     deleteModal = new bootstrap.Modal(
       document.getElementById('delProductModal'),
@@ -157,7 +163,8 @@ app.component('delProductModal', {
         .then((res) => {
           alert(res.data.message);
           deleteModal.hide();
-          this.$emit('update');
+          // 修改：刪除產品後，停留在同一頁面
+          this.$emit('update', this.pagination.current_page);
         })
         .catch((err) => {
           alert(err.response.data.message);

@@ -80,12 +80,14 @@
         :api-path="apiPath"
         :product="tempProduct"
         :is-new-product="isNewProduct"
+        :pagination="pagination"
         @update="getAllProducts"
       ></product-modal>
       <del-product-modal
         :api-url="apiUrl"
         :api-path="apiPath"
         :product="tempProduct"
+        :pagination="pagination"
         @update="getAllProducts"
       ></del-product-modal>
       <!-- Modal 元件 -->
